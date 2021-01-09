@@ -1,26 +1,19 @@
 package com.example.application.views;
 
 import com.example.application.data.entity.Author;
-import com.example.application.data.repository.AuthorRepository;
 import com.example.application.data.service.AuthorService;
-import com.vaadin.flow.component.ItemLabelGenerator;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.grid.HeaderRow;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
-import com.vaadin.flow.data.provider.ListDataProvider;
-import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.DayOfWeek;
-import java.time.LocalDate;
 import java.time.Month;
-import java.util.ArrayList;
 import java.util.List;
 
 @Route(value = "test", layout = MainView.class)
@@ -34,7 +27,7 @@ public class TestView extends VerticalLayout {
     private ComboBox<Month> monthFilter;
     private ComboBox<DayOfWeek> dayOfWeekFilter;
 
-    public TestView(@Autowired AuthorService authorService, AuthorRepository authorRepository) {
+    public TestView(@Autowired AuthorService authorService, com.example.application.data.repository.AuthorRepository authorRepository) {
         grid = new Grid<>(Author.class, false);
         List<Author> authors = List.of(
                 new Author( "2", "2", "2") ,

@@ -1,5 +1,6 @@
-package com.example.application.data.repository;
+package com.example.application.data.repository.impl;
 
+import com.example.application.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 

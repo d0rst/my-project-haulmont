@@ -1,8 +1,9 @@
 package com.example.application.views;
 
 import com.example.application.data.entity.Author;
-import com.example.application.data.repository.AuthorRepository;
-import com.example.application.data.service.AuthorService;
+import com.example.application.data.entity.Book;
+import com.example.application.data.repository.BookRepository;
+import com.example.application.data.service.BookService;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasStyle;
 import com.vaadin.flow.component.button.Button;
@@ -24,27 +25,28 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.vaadin.flow.router.RouteAlias;
 import com.vaadin.flow.component.textfield.TextField;
 
-@Route(value = "authors", layout = MainView.class)
-@PageTitle("Authors")
+@Route(value = "books", layout = MainView.class)
+@PageTitle("Books")
 @CssImport("./styles/views/helloworld/hello-world-view.css")
-@RouteAlias(value = "", layout = MainView.class)
-public class AuthorView extends Div {
+@RouteAlias(value = "books", layout = MainView.class)
+public class BookView extends Div {
 
-    private Grid<Author> grid = new Grid<>(Author.class, false);
+    private Grid<Book> grid = new Grid<>(Book.class, false);
 
-    private TextField firstName;
-    private TextField lastName;
-    private TextField patronymic;
+    private TextField title;
+    private TextField city;
+    private TextField publisher;
+    private TextField year;
 
     private Button cancel = new Button("Cancel");
     private Button save = new Button("Save");
 
-    private BeanValidationBinder<Author> binder;
+    private BeanValidationBinder<Book> binder;
 
-    private Author author;
+    private Book book;
 
-    public AuthorView(@Autowired AuthorService authorService, AuthorRepository authorRepository) {
-        setId("author-view");
+    public BookView(@Autowired BookService bookService, BookRepository bookRepository) {
+        setId("book-view");
         SplitLayout splitLayout = new SplitLayout();
         splitLayout.setSizeFull();
 
@@ -53,10 +55,11 @@ public class AuthorView extends Div {
 
         add(splitLayout);
 
-        grid.addColumn("firstName").setAutoWidth(true);
-        grid.addColumn("lastName").setAutoWidth(true);
-        grid.addColumn("patronymic").setAutoWidth(true);
-        grid.setItems(authorRepository.getAllAuthors());
+        grid.addColumn("title").setAutoWidth(true);
+        grid.addColumn("city").setAutoWidth(true);
+        grid.addColumn(Book::getPublisher).setHeader("publisher").setAutoWidth(true);
+        grid.addColumn(Book::getYear).setHeader("year").setAutoWidth(true);
+        grid.setItems(bookRepository.getAllBooks());
 
 //        grid.setItems(query -> {
 //            return authorRepository.getAllAuthors( // (1)
@@ -80,9 +83,9 @@ public class AuthorView extends Div {
 
         grid.asSingleSelect().addValueChangeListener(event -> {
             if (event.getValue() != null) {
-                Author authorFromBackend = authorService.getAuthorById(event.getValue().getAuthorId());
-                if (authorFromBackend != null) {
-                    populateForm(authorFromBackend);
+                Book bookFromBackend = bookService.getBookById(event.getValue().getBookId());
+                if (bookFromBackend != null) {
+                    populateForm(bookFromBackend);
                 } else {
                     refreshGrid();
                 }
@@ -91,7 +94,7 @@ public class AuthorView extends Div {
             }
         });
 
-        binder = new BeanValidationBinder<>(Author.class);
+        binder = new BeanValidationBinder<>(Book.class);
 
         binder.bindInstanceFields(this);
 
@@ -102,12 +105,12 @@ public class AuthorView extends Div {
 
         save.addClickListener(e -> {
             try {
-                if (this.author == null) {
-                    this.author = new Author();
+                if (this.book == null) {
+                    this.book = new Book();
                 }
-                binder.writeBean(this.author);
+                binder.writeBean(this.book);
 
-                authorRepository.update(this.author);
+                bookRepository.update(this.book);
                 clearForm();
                 refreshGrid();
                 Notification.show("Person details stored.");
@@ -127,11 +130,12 @@ public class AuthorView extends Div {
         editorLayoutDiv.add(editorDiv);
 
         FormLayout formLayout = new FormLayout();
-        firstName = new TextField("First Name");
-        lastName = new TextField("Last Name");
-        patronymic = new TextField("Patronymic");
+        title = new TextField("Title");
+        city  = new TextField("City");
+        publisher  = new TextField("Publisher");
+        year = new TextField("Year");
 
-        Component[] fields = new Component[]{firstName, lastName, patronymic};
+        Component[] fields = new Component[]{title, city, publisher, year};
 
         for (Component field : fields) {
             ((HasStyle) field).addClassName("full-width");
@@ -171,9 +175,8 @@ public class AuthorView extends Div {
         populateForm(null);
     }
 
-    private void populateForm(Author value) {
-        this.author = value;
-        binder.readBean(this.author);
-
+    private void populateForm(Book value) {
+        this.book = value;
+        binder.readBean(this.book);
     }
 }

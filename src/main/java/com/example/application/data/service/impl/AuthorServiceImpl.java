@@ -1,7 +1,7 @@
-package com.example.application.data.service;
+package com.example.application.data.service.impl;
 
 import com.example.application.data.entity.Author;
-import com.example.application.data.repository.AuthorRepository;
+import com.example.application.data.service.AuthorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,7 +11,7 @@ import java.util.List;
 public class AuthorServiceImpl implements AuthorService {
 
     @Autowired
-    private AuthorRepository authorRepository;
+    private com.example.application.data.repository.AuthorRepository authorRepository;
 
     @Override
     public Author getAuthorById(Long id) {

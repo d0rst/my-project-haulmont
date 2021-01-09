@@ -1,6 +1,9 @@
-package com.example.application.data.repository;
+package com.example.application.data.repository.impl;
 
 import com.example.application.data.entity.Author;
+import com.example.application.data.repository.AuthorRepository;
+import com.example.application.data.repository.CrudRepository;
+import com.sun.xml.bind.v2.TODO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -57,6 +60,7 @@ public class AuthorRepositoryJpa implements AuthorRepository {
 //        return typedQuery.getResultStream().collect(Collectors.toSet());
 //    }
 
+    //TODO тут sql запрос говна
     @Override
     public List<Author> getAllAuthors() {
         TypedQuery<Author> query = em.createQuery("select a from Author a", Author.class);

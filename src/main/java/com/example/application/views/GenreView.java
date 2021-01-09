@@ -1,8 +1,8 @@
 package com.example.application.views;
 
-import com.example.application.data.entity.Author;
-import com.example.application.data.repository.AuthorRepository;
-import com.example.application.data.service.AuthorService;
+import com.example.application.data.entity.Genre;
+import com.example.application.data.repository.GenreRepository;
+import com.example.application.data.service.GenreService;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasStyle;
 import com.vaadin.flow.component.button.Button;
@@ -15,36 +15,33 @@ import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.splitlayout.SplitLayout;
+import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import com.vaadin.flow.router.RouteAlias;
-import com.vaadin.flow.component.textfield.TextField;
+import org.springframework.beans.factory.annotation.Autowired;
 
-@Route(value = "authors", layout = MainView.class)
-@PageTitle("Authors")
+@Route(value = "genres", layout = MainView.class)
+@PageTitle("Genres")
 @CssImport("./styles/views/helloworld/hello-world-view.css")
-@RouteAlias(value = "", layout = MainView.class)
-public class AuthorView extends Div {
+@RouteAlias(value = "genres", layout = MainView.class)
+public class GenreView extends Div {
 
-    private Grid<Author> grid = new Grid<>(Author.class, false);
+    private Grid<Genre> grid = new Grid<>(Genre.class, false);
 
-    private TextField firstName;
-    private TextField lastName;
-    private TextField patronymic;
+    private TextField name;
 
     private Button cancel = new Button("Cancel");
     private Button save = new Button("Save");
 
-    private BeanValidationBinder<Author> binder;
+    private BeanValidationBinder<Genre> binder;
 
-    private Author author;
+    private Genre genre;
 
-    public AuthorView(@Autowired AuthorService authorService, AuthorRepository authorRepository) {
-        setId("author-view");
+    public GenreView(@Autowired GenreService genreService, GenreRepository genreRepository) {
+        setId("genre-view");
         SplitLayout splitLayout = new SplitLayout();
         splitLayout.setSizeFull();
 
@@ -53,10 +50,7 @@ public class AuthorView extends Div {
 
         add(splitLayout);
 
-        grid.addColumn("firstName").setAutoWidth(true);
-        grid.addColumn("lastName").setAutoWidth(true);
-        grid.addColumn("patronymic").setAutoWidth(true);
-        grid.setItems(authorRepository.getAllAuthors());
+        grid.addColumn("name").setAutoWidth(true);
 
 //        grid.setItems(query -> {
 //            return authorRepository.getAllAuthors( // (1)
@@ -80,9 +74,9 @@ public class AuthorView extends Div {
 
         grid.asSingleSelect().addValueChangeListener(event -> {
             if (event.getValue() != null) {
-                Author authorFromBackend = authorService.getAuthorById(event.getValue().getAuthorId());
-                if (authorFromBackend != null) {
-                    populateForm(authorFromBackend);
+                Genre genreFromBackend = genreService.getGenreById((event.getValue().getGenreId()));
+                if (genreFromBackend != null) {
+                    populateForm(genreFromBackend);
                 } else {
                     refreshGrid();
                 }
@@ -91,7 +85,7 @@ public class AuthorView extends Div {
             }
         });
 
-        binder = new BeanValidationBinder<>(Author.class);
+        binder = new BeanValidationBinder<>(Genre.class);
 
         binder.bindInstanceFields(this);
 
@@ -102,12 +96,12 @@ public class AuthorView extends Div {
 
         save.addClickListener(e -> {
             try {
-                if (this.author == null) {
-                    this.author = new Author();
+                if (this.genre == null) {
+                    this.genre = new Genre();
                 }
-                binder.writeBean(this.author);
+                binder.writeBean(this.genre);
 
-                authorRepository.update(this.author);
+                genreRepository.update(this.genre);
                 clearForm();
                 refreshGrid();
                 Notification.show("Person details stored.");
@@ -127,11 +121,9 @@ public class AuthorView extends Div {
         editorLayoutDiv.add(editorDiv);
 
         FormLayout formLayout = new FormLayout();
-        firstName = new TextField("First Name");
-        lastName = new TextField("Last Name");
-        patronymic = new TextField("Patronymic");
+        name = new TextField("Name");
 
-        Component[] fields = new Component[]{firstName, lastName, patronymic};
+        Component[] fields = new Component[]{name};
 
         for (Component field : fields) {
             ((HasStyle) field).addClassName("full-width");
@@ -171,9 +163,8 @@ public class AuthorView extends Div {
         populateForm(null);
     }
 
-    private void populateForm(Author value) {
-        this.author = value;
-        binder.readBean(this.author);
-
+    private void populateForm(Genre value) {
+        this.genre = value;
+        binder.readBean(this.genre);
     }
 }

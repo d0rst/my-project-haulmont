@@ -56,14 +56,21 @@ public class Book{
     public void setTitle(String title) {
         this.title = title;
     }
-    public Publisher getPublisher() {
-        return publisher;
+//    public Publisher getPublisher() {
+//        return publisher;
+//    }
+    public String getPublisher(){
+        return publisher.getName();
     }
     public void setPublisher(Publisher publisher) {
         this.publisher = publisher;
     }
-    public int getYear() {
-        return year;
+//    public int getYear() {
+//        return year;
+//    }
+
+    public String getYear() {
+        return String.valueOf(year);
     }
     public void setYear(int year) {
         this.year = year;
