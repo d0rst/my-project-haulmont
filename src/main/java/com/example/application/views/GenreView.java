@@ -124,6 +124,8 @@ public class GenreView extends Div {
 
         FormLayout formLayout = new FormLayout();
         name = new TextField("Name");
+        name.setPattern("^[A-Za-zА-Яа-яЁё\\s-]+$");
+        name.setPreventInvalidInput(true);
 
         Component[] fields = new Component[]{name};
 

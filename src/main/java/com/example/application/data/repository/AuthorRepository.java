@@ -6,6 +6,7 @@ import java.util.List;
 
 public interface AuthorRepository extends CrudRepository<Author> {
 
+
     List<Author> getAllAuthors();
 
 }

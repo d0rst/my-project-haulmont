@@ -1,25 +1,31 @@
 package com.example.application.views;
 
-import com.example.application.data.entity.Author;
 import com.example.application.data.entity.Book;
+import com.example.application.data.entity.Genre;
 import com.example.application.data.repository.AuthorRepository;
+import com.example.application.data.repository.BookRepository;
 import com.example.application.data.service.AuthorService;
+import com.example.application.data.service.BookService;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasStyle;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
-import com.vaadin.flow.component.grid.HeaderRow;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.listbox.ListBox;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.splitlayout.SplitLayout;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
+import com.vaadin.flow.data.binder.Setter;
 import com.vaadin.flow.data.binder.ValidationException;
-import com.vaadin.flow.data.provider.ListDataProvider;
+import com.vaadin.flow.data.converter.Converter;
+import com.vaadin.flow.data.converter.StringToIntegerConverter;
+import com.vaadin.flow.data.validator.RegexpValidator;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
@@ -29,30 +35,37 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.vaadin.flow.router.RouteAlias;
 import com.vaadin.flow.component.textfield.TextField;
 
+import java.text.NumberFormat;
 import java.util.List;
+import java.util.Locale;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
-@Route(value = "authors", layout = MainView.class)
-@PageTitle("Authors")
+@Route(value = "books", layout = MainView.class)
+@PageTitle("Books")
 @CssImport("./styles/views/helloworld/hello-world-view.css")
-@RouteAlias(value = "", layout = MainView.class)
-public class AuthorView extends Div {
+@RouteAlias(value = "books", layout = MainView.class)
+public class BookView extends Div {
 
-    private Grid<Author> grid = new Grid<>(Author.class, false);
+    private Grid<Book> grid = new Grid<>(Book.class, false);
 
-    private TextField firstName;
-    private TextField lastName;
-    private TextField patronymic;
+    private TextField title;
+    private TextField city;
+    private TextField year;
+    private TextField author;
+    private TextField genre;
+    private ListBox<String> publisher = new ListBox<>();;
 
+    
     private Button cancel = new Button("Cancel");
     private Button save = new Button("Save");
     private Button delete = new Button("Delete");
 
-    private BeanValidationBinder<Author> binder;
+    private BeanValidationBinder<Book> binder;
 
-    private Author author;
-    private ListDataProvider<Author> dataProvider;
+    private Book book;
 
-    public AuthorView(@Autowired AuthorService authorService, AuthorRepository authorRepository) {
+    public BookView(@Autowired BookService bookService, BookRepository bookRepository) {
         setId("author-view");
         SplitLayout splitLayout = new SplitLayout();
         splitLayout.setSizeFull();
@@ -62,24 +75,30 @@ public class AuthorView extends Div {
 
         add(splitLayout);
 
-        dataProvider = new ListDataProvider<>(
-                authorRepository.getAllAuthors());
+        grid.addColumn("title").setAutoWidth(true);
+        grid.addColumn("city").setAutoWidth(true);
+        grid.addColumn("publisher")
+                .setComparator(Book::getPublisher)
+                .setAutoWidth(true);
+        grid.addColumn("year")
+                .setComparator(Book::getYear)
+                .setAutoWidth(true);
+        grid.addColumn("authorId")
+                .setComparator(Book::getAuthorId)
+                .setAutoWidth(true);
+        grid.addColumn("genreId")
+                .setComparator(Book::getGenreId)
+                .setAutoWidth(true);
 
-
-        grid.addColumn("firstName").setAutoWidth(true);
-        grid.addColumn("lastName").setAutoWidth(true);
-        grid.addColumn("patronymic").setAutoWidth(true);
-
-
-        grid.setItems(authorRepository.getAllAuthors());
+        grid.setItems(bookRepository.getAllBooks());
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
         grid.setHeightFull();
 
         grid.asSingleSelect().addValueChangeListener(event -> {
             if (event.getValue() != null) {
-                Author authorFromBackend = authorService.getAuthorById(event.getValue().getAuthorId());
-                if (authorFromBackend != null) {
-                    populateForm(authorFromBackend);
+                Book bookFromBackend = bookService.getBookById(event.getValue().getBookId());
+                if (bookFromBackend != null) {
+                    populateForm(bookFromBackend);
                 } else {
                     refreshGrid();
                 }
@@ -88,7 +107,23 @@ public class AuthorView extends Div {
             }
         });
 
-        binder = new BeanValidationBinder<>(Author.class);
+        binder = new BeanValidationBinder<>(Book.class);
+        binder.forField(year)
+                .withValidator(text -> text.length() == 4,
+                        "Doesn't look like a year")
+                .withConverter(
+                        new StringToIntegerConverter("Must enter a number") {
+                            protected NumberFormat getFormat(Locale locale) {
+                                NumberFormat format = super.getFormat(locale);
+                                format.setGroupingUsed(false);
+                                return format;
+                            }
+                        })
+                .bind(Book::getYear, Book::setYear);
+
+        binder.forField(title)
+                .asRequired("Every book must have a title")
+                .bind(Book::getTitle, Book::setTitle);
 
         binder.bindInstanceFields(this);
 
@@ -98,39 +133,36 @@ public class AuthorView extends Div {
         });
 
         save.addClickListener(e -> {
+            if (this.book == null) {
+                this.book = new Book();
+            }
             try {
-                if (this.author == null) {
-                    this.author = new Author();
-                }
-                binder.writeBean(this.author);
-
-                authorRepository.update(this.author);
+                binder.writeBean(this.book);
+                bookRepository.update(this.book);
                 clearForm();
                 refreshGrid();
                 Notification.show("details stored.");
             } catch (ValidationException validationException) {
-                Notification.show("An exception happened while trying to store the details.");
+                validationException.printStackTrace();
             }
         });
 
         delete.addClickListener(e -> {
+            if (this.book == null) {
+                this.book = new Book();
+            }
             try {
-                if (this.author == null) {
-                    this.author = new Author();
-                }
-                binder.writeBean(this.author);
-
-                authorRepository.delete(this.author);
+                binder.writeBean(this.book);
+                bookRepository.delete(this.book);
                 clearForm();
                 refreshGrid();
-                Notification.show("details deleted");
+                Notification.show("details stored.");
             } catch (ValidationException validationException) {
-                Notification.show("An exception occurred while trying to delete detail.");
+                validationException.printStackTrace();
             }
         });
+
     }
-
-
 
     private void createEditorLayout(SplitLayout splitLayout) {
         Div editorLayoutDiv = new Div();
@@ -141,35 +173,26 @@ public class AuthorView extends Div {
         editorLayoutDiv.add(editorDiv);
 
         FormLayout formLayout = new FormLayout();
+        title =  new TextField("title");
 
+        city = new TextField("city");
+        city.setPattern("^[A-Za-zА-Яа-яЁё\\s-]+$");
+        city.setPreventInvalidInput(true);
+        year = new TextField("year");
 
-        firstName = new TextField("First Name");
-        firstName.setPattern("^[A-Za-zА-Яа-яЁё\\s-]+$");
+        publisher.setItems("Москва", "Санкт-Петербург", "O’Reilly");
+        publisher.setValue("Москва");
 
-//        HeaderRow filterRow = grid.appendHeaderRow();
-//        firstName.setPreventInvalidInput(true);
-//        firstName.addValueChangeListener(event -> dataProvider.addFilter(
-//                author -> StringUtils.containsIgnoreCase(author.getFirstName(),
-//                        firstName.getValue())));
-//        firstName.setValueChangeMode(ValueChangeMode.EAGER);
-//
-//        filterRow.getCell(grid.getColumnByKey("firstName")).setComponent(firstName);
-//        firstName.setSizeFull();
-//        firstName.setPlaceholder("Filter");
+        author = new TextField("Author");
+        genre = new TextField("Genre");
 
-        lastName = new TextField("Last Name");
-        lastName.setPattern("^[A-Za-zА-Яа-яЁё\\s-]+$");
-        lastName.setPreventInvalidInput(true);
-        patronymic = new TextField("Patronymic");
-        patronymic.setPattern("^[A-Za-zА-Яа-яЁё\\s-]+$");
-        patronymic.setPreventInvalidInput(true);
-
-        Component[] fields = new Component[]{firstName, lastName, patronymic};
+        Component[] fields = new Component[]{title, city, year, author, genre};
 
         for (Component field : fields) {
             ((HasStyle) field).addClassName("full-width");
         }
         formLayout.add(fields);
+        formLayout.add(publisher);
         editorDiv.add(formLayout);
         createButtonLayout(editorLayoutDiv);
 
@@ -205,8 +228,8 @@ public class AuthorView extends Div {
         populateForm(null);
     }
 
-    private void populateForm(Author value) {
-        this.author = value;
-        binder.readBean(this.author);
+    private void populateForm(Book value) {
+        this.book = value;
+        binder.readBean(this.book);
     }
 }

@@ -50,6 +50,4 @@ public class BookRepositoryJpa implements BookRepository {
         TypedQuery<Book> query = em.createQuery("select b from Book b", Book.class);
         return query.getResultList();
     }
-
-
 }
