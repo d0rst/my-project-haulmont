@@ -4,6 +4,7 @@ import com.example.application.data.entity.Author;
 import com.example.application.data.entity.Book;
 import com.example.application.data.repository.BookRepository;
 import com.example.application.data.repository.CrudRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,6 +18,8 @@ import java.util.stream.Collectors;
 @Repository
 @Transactional
 public class BookRepositoryJpa implements BookRepository {
+
+    @Autowired
     private CrudRepository<Book> crudRepository;
 
     @PersistenceContext
@@ -42,18 +45,6 @@ public class BookRepositoryJpa implements BookRepository {
         crudRepository.delete(book);
     }
 
-
-    //TODO тут sql запрос говна
-    @Override
-    public Set<Book> getBooksByAuthor(Author author) {
-        TypedQuery<Book> typedQuery =
-                em.createQuery("select b from Book b  where  :author MEMBER of b.authors", Book.class);
-        typedQuery.setParameter("author", author);
-        return typedQuery.getResultStream()
-                .collect(Collectors.toSet());
-    }
-
-    //TODO тут sql запрос говна
     @Override
     public List<Book> getAllBooks() {
         TypedQuery<Book> query = em.createQuery("select b from Book b", Book.class);

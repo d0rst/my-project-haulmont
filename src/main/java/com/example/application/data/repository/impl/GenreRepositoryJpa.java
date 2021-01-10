@@ -3,6 +3,7 @@ package com.example.application.data.repository.impl;
 import com.example.application.data.entity.Genre;
 import com.example.application.data.repository.CrudRepository;
 import com.example.application.data.repository.GenreRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,10 +12,11 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import java.util.List;
 
-@SuppressWarnings("JpaQlInspection")
 @Repository
 @Transactional
 public class GenreRepositoryJpa implements GenreRepository {
+
+    @Autowired
     private CrudRepository<Genre> crudRepository;
 
     @PersistenceContext

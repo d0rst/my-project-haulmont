@@ -80,9 +80,9 @@ public class MainView extends AppLayout {
 
     private Component[] createMenuItems() {
         return new Tab[]{
-                createTab("Authors", AuthorView.class),
-                createTab("Books", BookView.class),
                 createTab("Genre", GenreView.class),
+                createTab("Authors", AuthorView.class),
+                createTab("Books", BookView.class)
         };
     }
 

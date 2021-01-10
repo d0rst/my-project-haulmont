@@ -12,22 +12,20 @@ public class Genre{
 
     @Column(name = "NAME")
     private String name;
-//    @ManyToMany(mappedBy = "genres", fetch = FetchType.LAZY)
-//    private Set<Book> books;
+
+    public Genre(){}
+
+    public Genre(String name) {
+        this.name = name;
+    }
 
     public String getName() {
         return name;
     }
+
     public void setName(String name) {
         this.name = name;
     }
-//    public Set<Book> getBooks() {
-//        return books;
-//    }
-//    public void setBooks(Set<Book> books) {
-//        this.books = books;
-//    }
-
 
     public Long getGenreId() {
         return genreId;

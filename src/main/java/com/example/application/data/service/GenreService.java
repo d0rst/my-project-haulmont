@@ -9,7 +9,6 @@ public interface GenreService {
 
 //    Set<Genre> getGenresByBook(Long bookUuid);
     List<Genre> getAllGenres();
-//    Genre addGenre(String name);
-//    boolean delete(Long id);
-//    boolean delete(Genre genre);
+    boolean delete(Long id);
+    boolean delete(Genre genre);
 }

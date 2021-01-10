@@ -15,13 +15,14 @@ import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.splitlayout.SplitLayout;
-import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.router.RouteAlias;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import com.vaadin.flow.router.RouteAlias;
+import com.vaadin.flow.component.textfield.TextField;
 
 @Route(value = "genres", layout = MainView.class)
 @PageTitle("Genres")
@@ -35,6 +36,7 @@ public class GenreView extends Div {
 
     private Button cancel = new Button("Cancel");
     private Button save = new Button("Save");
+    private Button delete = new Button("Delete");
 
     private BeanValidationBinder<Genre> binder;
 
@@ -52,29 +54,13 @@ public class GenreView extends Div {
 
         grid.addColumn("name").setAutoWidth(true);
 
-//        grid.setItems(query -> {
-//            return authorRepository.getAllAuthors( // (1)
-//                    PageRequest.of(query.getPage(), // (2)
-//                            query.getPageSize()) // (3)
-//            ).stream(); // (4)
-//        });
-
-
-//        grid.setDataProvider(
-//                (sortOrders, offset, limit) ->
-//                        authorService.getAllAuthors(offset, limit).stream(),
-//                () -> authorService.count()
-//        );
-//
-//        DataProvider dataProvider = new ;
-
-//        grid.setDataProvider(new CrudServiceDataProvider<>(authorService));
+        grid.setItems(genreRepository.getAllGenres());
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
         grid.setHeightFull();
 
         grid.asSingleSelect().addValueChangeListener(event -> {
             if (event.getValue() != null) {
-                Genre genreFromBackend = genreService.getGenreById((event.getValue().getGenreId()));
+                Genre genreFromBackend = genreService.getGenreById(event.getValue().getGenreId());
                 if (genreFromBackend != null) {
                     populateForm(genreFromBackend);
                 } else {
@@ -104,12 +90,28 @@ public class GenreView extends Div {
                 genreRepository.update(this.genre);
                 clearForm();
                 refreshGrid();
-                Notification.show("Person details stored.");
+                Notification.show("details stored.");
             } catch (ValidationException validationException) {
-                Notification.show("An exception happened while trying to store the person details.");
+                Notification.show("An exception happened while trying to store the details.");
             }
         });
 
+        delete.addClickListener(e -> {
+            try {
+                if (this.genre == null) {
+                    this.genre = new Genre();
+                }
+                binder.writeBean(this.genre);
+
+                genreRepository.delete(this.genre);
+                clearForm();
+                refreshGrid();
+                Notification.show("details stored.");
+            } catch (ValidationException validationException) {
+                Notification.show("details block.");
+                validationException.printStackTrace();
+            }
+        });
     }
 
     private void createEditorLayout(SplitLayout splitLayout) {
@@ -142,7 +144,8 @@ public class GenreView extends Div {
         buttonLayout.setSpacing(true);
         cancel.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
         save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        buttonLayout.add(save, cancel);
+        delete.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        buttonLayout.add(save, cancel, delete);
         editorLayoutDiv.add(buttonLayout);
     }
 

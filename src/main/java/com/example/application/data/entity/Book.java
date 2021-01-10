@@ -5,26 +5,14 @@ import javax.persistence.*;
 @Entity
 @Table(name = "BOOKS")
 public class Book{
-//    @ManyToMany(fetch = FetchType.LAZY)
-//    @JoinTable(name = "AUTHOR_BOOK",
-//            joinColumns = @JoinColumn(name = "BOOK_ID", referencedColumnName = "ID"),
-//            inverseJoinColumns = @JoinColumn(name = "AUTHOR_ID", referencedColumnName = "ID"))
-//    Set<Author> authors;
-//    @ManyToMany(fetch = FetchType.LAZY)
-//    @JoinTable(name = "GENRE_BOOK",
-//            joinColumns = @JoinColumn(name = "BOOK_ID", referencedColumnName = "ID"),
-//            inverseJoinColumns = @JoinColumn(name = "GENRE_ID", referencedColumnName = "ID"))
-//    Set<Genre> genres;
-
     @Id
     @GeneratedValue
     @Column(name = "BOOK_ID")
     private Long bookId;
-
     @Column(name = "TITLE")
     private String title;
-    @Enumerated(EnumType.STRING)
-    private Publisher publisher;
+    @Column(name = "PUBLISHER")
+    private String publisher;
     @Column(name = "YEAR")
     private int year;
     @Column(name = "CITY")
@@ -34,16 +22,26 @@ public class Book{
     @Column(name = "GENRE_ID")
     private Long genreId;
 
-    public Long getGenreId() {
-        return genreId;
+    public Book(){}
+
+    public String getGenreId() {
+        return String.valueOf(genreId);
     }
 
     public void setGenreId(Long genreId) {
         this.genreId = genreId;
     }
 
-    public Long getAuthorId() {
-        return authorId;
+    public void setGenreId(String genreId) {
+        this.genreId = Long.valueOf(genreId);
+    }
+
+    public String getAuthorId() {
+        return String.valueOf(authorId);
+    }
+
+    public void setAuthorId(String authorId) {
+        this.authorId = Long.valueOf(authorId);
     }
 
     public void setAuthorId(Long authorId) {
@@ -53,31 +51,31 @@ public class Book{
     public String getTitle() {
         return title;
     }
+
     public void setTitle(String title) {
         this.title = title;
     }
-//    public Publisher getPublisher() {
-//        return publisher;
-//    }
+
     public String getPublisher(){
-        return publisher.getName();
+        return publisher;
     }
-    public void setPublisher(Publisher publisher) {
+
+    public void setPublisher(String publisher){
         this.publisher = publisher;
     }
-//    public int getYear() {
-//        return year;
-//    }
 
-    public String getYear() {
-        return String.valueOf(year);
+    public int getYear() {
+        return year;
     }
+
     public void setYear(int year) {
         this.year = year;
     }
+
     public String getCity() {
         return city;
     }
+
     public void setCity(String city) {
         this.city = city;
     }

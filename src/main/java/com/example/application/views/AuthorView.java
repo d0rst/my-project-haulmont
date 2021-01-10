@@ -38,6 +38,7 @@ public class AuthorView extends Div {
 
     private Button cancel = new Button("Cancel");
     private Button save = new Button("Save");
+    private Button delete = new Button("Delete");
 
     private BeanValidationBinder<Author> binder;
 
@@ -56,25 +57,8 @@ public class AuthorView extends Div {
         grid.addColumn("firstName").setAutoWidth(true);
         grid.addColumn("lastName").setAutoWidth(true);
         grid.addColumn("patronymic").setAutoWidth(true);
+
         grid.setItems(authorRepository.getAllAuthors());
-
-//        grid.setItems(query -> {
-//            return authorRepository.getAllAuthors( // (1)
-//                    PageRequest.of(query.getPage(), // (2)
-//                            query.getPageSize()) // (3)
-//            ).stream(); // (4)
-//        });
-
-
-//        grid.setDataProvider(
-//                (sortOrders, offset, limit) ->
-//                        authorService.getAllAuthors(offset, limit).stream(),
-//                () -> authorService.count()
-//        );
-//
-//        DataProvider dataProvider = new ;
-
-//        grid.setDataProvider(new CrudServiceDataProvider<>(authorService));
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
         grid.setHeightFull();
 
@@ -110,12 +94,27 @@ public class AuthorView extends Div {
                 authorRepository.update(this.author);
                 clearForm();
                 refreshGrid();
-                Notification.show("Person details stored.");
+                Notification.show("details stored.");
             } catch (ValidationException validationException) {
-                Notification.show("An exception happened while trying to store the person details.");
+                Notification.show("An exception happened while trying to store the details.");
             }
         });
 
+        delete.addClickListener(e -> {
+            try {
+                if (this.author == null) {
+                    this.author = new Author();
+                }
+                binder.writeBean(this.author);
+
+                authorRepository.delete(this.author);
+                clearForm();
+                refreshGrid();
+                Notification.show("details deleted");
+            } catch (ValidationException validationException) {
+                Notification.show("An exception occurred while trying to delete detail.");
+            }
+        });
     }
 
     private void createEditorLayout(SplitLayout splitLayout) {
@@ -150,7 +149,8 @@ public class AuthorView extends Div {
         buttonLayout.setSpacing(true);
         cancel.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
         save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        buttonLayout.add(save, cancel);
+        delete.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        buttonLayout.add(save, cancel, delete);
         editorLayoutDiv.add(buttonLayout);
     }
 
@@ -174,6 +174,5 @@ public class AuthorView extends Div {
     private void populateForm(Author value) {
         this.author = value;
         binder.readBean(this.author);
-
     }
 }

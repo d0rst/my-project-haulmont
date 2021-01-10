@@ -5,28 +5,22 @@ import com.example.application.data.entity.Genre;
 import com.example.application.data.repository.BookRepository;
 import com.example.application.data.repository.GenreRepository;
 import com.example.application.data.service.GenreService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Set;
-
 
 @Service
 public class GenreServiceImpl implements GenreService {
 
+    @Autowired
     private GenreRepository genreRepository;
-//    private final BookRepository bookRepository;
 
     @Override
     public Genre getGenreById(Long id) {
         return genreRepository.read(Genre.class, id);
     }
 
-//    @Override
-//    public Set<Genre> getGenresByBook(UUID bookUuid) {
-//        Book book = bookRepository.read(Book.class, bookUuid);
-//        return genreRepository.getGenresByBook(book);
-//    }
 
     @Override
     public List<Genre> getAllGenres() {
@@ -45,21 +39,20 @@ public class GenreServiceImpl implements GenreService {
 //        return null;
 //    }
 
-//    @Override
-//    public boolean delete(UUID id) {
-//        Genre genre = genreRepository.read(Genre.class, id);
-//        return delete(genre);
-//    }
-//
-//    @Override
-//    public boolean delete(Genre genre) {
-//        try {
-//            genreRepository.delete(genre);
-//        } catch (Exception e) {
-//            log.error("Error deleting genre - " + genre.getId(), e);
-//            return false;
-//        }
-//        return true;
-//    }
+    @Override
+    public boolean delete(Long id) {
+        Genre genre = genreRepository.read(Genre.class, id);
+        return delete(genre);
+    }
+
+    @Override
+    public boolean delete(Genre genre) {
+        try {
+            genreRepository.delete(genre);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return true;
+    }
 
 }
