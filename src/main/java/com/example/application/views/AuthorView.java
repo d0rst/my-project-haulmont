@@ -17,6 +17,7 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.splitlayout.SplitLayout;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.ValidationException;
+import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
@@ -32,10 +33,12 @@ public class AuthorView extends Div {
 
     private Grid<Author> grid = new Grid<>(Author.class, false);
 
-    private TextField id;
     private TextField firstName;
     private TextField lastName;
     private TextField patronymic;
+
+    TextField filterText = new TextField();
+
 
     private Button cancel = new Button("Cancel");
     private Button save = new Button("Save");
@@ -53,13 +56,19 @@ public class AuthorView extends Div {
         createGridLayout(splitLayout);
         createEditorLayout(splitLayout);
 
-        add(splitLayout);
+        add(splitLayout, filterText);
 
         grid.addColumn("authorId").setAutoWidth(true);
         grid.addColumn("firstName").setAutoWidth(true);
         grid.addColumn("lastName").setAutoWidth(true);
         grid.addColumn("patronymic").setAutoWidth(true);
 
+
+        filterText.setPlaceholder("Filter...");
+        filterText.setClearButtonVisible(true);
+        filterText.setValueChangeMode(ValueChangeMode.LAZY);
+        filterText.addValueChangeListener(e ->
+                grid.setItems(authorService.findAll(filterText.getValue())));
 
         grid.setItems(authorRepository.getAllAuthors());
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
@@ -119,8 +128,6 @@ public class AuthorView extends Div {
             }
         });
     }
-
-
 
     private void createEditorLayout(SplitLayout splitLayout) {
         Div editorLayoutDiv = new Div();
@@ -186,5 +193,4 @@ public class AuthorView extends Div {
         this.author = value;
         binder.readBean(this.author);
     }
-
 }

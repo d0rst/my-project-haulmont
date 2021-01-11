@@ -40,4 +40,13 @@ public class AuthorServiceImpl implements AuthorService {
         return true;
     }
 
+    @Override
+    public List<Author> findAll(String filterText) {
+        if(filterText == null || filterText.isEmpty()) {
+            return authorRepository.getAllAuthors();
+        } else  {
+            return authorRepository.search(filterText);
+        }
+    }
+
 }

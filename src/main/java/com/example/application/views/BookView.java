@@ -1,16 +1,19 @@
 package com.example.application.views;
 
 import com.example.application.data.entity.Book;
+import com.example.application.data.entity.Genre;
 import com.example.application.data.repository.BookRepository;
 import com.example.application.data.service.BookService;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasStyle;
+import com.vaadin.flow.component.HasValue;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
+import com.vaadin.flow.component.grid.HeaderRow;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.listbox.ListBox;
 import com.vaadin.flow.component.notification.Notification;
@@ -19,6 +22,7 @@ import com.vaadin.flow.component.splitlayout.SplitLayout;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.data.converter.StringToIntegerConverter;
+import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
@@ -71,13 +75,6 @@ public class BookView extends Div {
         grid.addColumn("year")
                 .setComparator(Book::getYear)
                 .setAutoWidth(true);
-
-//        grid.addColumn("authorId")
-//                .setComparator(Book::getAuthorId)
-//                .setAutoWidth(true);
-//        grid.addColumn("genreId")
-//                .setComparator(Book::getGenreId)
-//                .setAutoWidth(true);
 
         grid.setItems(bookRepository.getAllBooks());
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
@@ -172,9 +169,6 @@ public class BookView extends Div {
         publisher.setItems("Москва", "Санкт-Петербург", "O’Reilly");
         publisher.setValue("Москва");
 
-//        author = new TextField("Author");
-//        genre = new TextField("Genre");
-
         Component[] fields = new Component[]{title, city, year};
 
         for (Component field : fields) {
@@ -221,4 +215,5 @@ public class BookView extends Div {
         this.book = value;
         binder.readBean(this.book);
     }
+
 }

@@ -18,10 +18,6 @@ public class Book{
     private int year;
     @Column(name = "CITY")
     private String city;
-//    @Column(name = "AUTHOR_ID")
-//    private Long authorId;
-//    @Column(name = "GENRE_ID")
-//    private Long genreId;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "GENRE_BOOK",
@@ -30,30 +26,6 @@ public class Book{
     Set<Genre> genres;
 
     public Book(){}
-
-//    public String getGenreId() {
-//        return String.valueOf(genreId);
-//    }
-//
-//    public void setGenreId(Long genreId) {
-//        this.genreId = genreId;
-//    }
-//
-//    public void setGenreId(String genreId) {
-//        this.genreId = Long.valueOf(genreId);
-//    }
-//
-//    public String getAuthorId() {
-//        return String.valueOf(authorId);
-//    }
-
-//    public void setAuthorId(String authorId) {
-//        this.authorId = Long.valueOf(authorId);
-//    }
-
-//    public void setAuthorId(Long authorId) {
-//        this.authorId = authorId;
-//    }
 
     public String getTitle() {
         return title;

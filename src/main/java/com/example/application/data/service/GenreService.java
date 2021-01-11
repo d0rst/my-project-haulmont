@@ -1,7 +1,6 @@
 package com.example.application.data.service;
 
 import com.example.application.data.entity.Genre;
-import com.vaadin.flow.component.html.Label;
 
 import java.util.List;
 

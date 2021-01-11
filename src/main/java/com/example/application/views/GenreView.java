@@ -23,16 +23,15 @@ import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.data.provider.DataProvider;
 import com.vaadin.flow.data.provider.ListDataProvider;
-import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.vaadin.flow.router.RouteAlias;
 import com.vaadin.flow.component.textfield.TextField;
 
-import java.util.Locale;
+import java.util.List;
+
 
 @Route(value = "genres", layout = MainView.class)
 @PageTitle("Genres")
@@ -52,6 +51,9 @@ public class GenreView extends VerticalLayout {
 
     private Genre genre;
 
+
+
+
     public GenreView(@Autowired GenreService genreService, GenreRepository genreRepository) {
         setId("genre-view");
         SplitLayout splitLayout = new SplitLayout();
@@ -59,19 +61,21 @@ public class GenreView extends VerticalLayout {
 
         createGridLayout(splitLayout);
         createEditorLayout(splitLayout);
-        
+
         statLabel = new Label("Statistics");
 
-        HeaderRow filterRow = grid.appendHeaderRow();
+
+
+//        HeaderRow filterRow = grid.appendHeaderRow();
         Grid.Column<Genre> firstNameColumn = grid
                 .addColumn(Genre::getName).setHeader("Name");
 
-        TextField nameFilter = new TextField();
-        nameFilter.setPlaceholder("Name...");
-        nameFilter.addValueChangeListener(this::onNameFilterTextChange);
-        filterRow.getCell(firstNameColumn).setComponent(nameFilter);
-        nameFilter.setSizeFull();
-        nameFilter.setPlaceholder("Filter");
+//        TextField nameFilter = new TextField();
+//        nameFilter.setPlaceholder("Name...");
+//        nameFilter.addValueChangeListener(this::onNameFilterTextChange);
+//        filterRow.getCell(firstNameColumn).setComponent(nameFilter);
+//        nameFilter.setSizeFull();
+//        nameFilter.setPlaceholder("Filter");
 
         grid.setItems(genreRepository.getAllGenres());
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
@@ -202,13 +206,13 @@ public class GenreView extends VerticalLayout {
         binder.readBean(this.genre);
     }
 
-    private void onNameFilterTextChange(HasValue.ValueChangeEvent<String> event) {
-        ListDataProvider<Genre> dataProvider = (ListDataProvider<Genre>) grid.getDataProvider();
-        dataProvider.setFilter(Genre::getName, s -> caseInsensitiveContains(s, event.getValue()));
-    }
-
-    private Boolean caseInsensitiveContains(String where, String what) {
-        return where.toLowerCase().contains(what.toLowerCase());
-    }
+//    private void onNameFilterTextChange(HasValue.ValueChangeEvent<String> event) {
+//        ListDataProvider<Genre> dataProvider = (ListDataProvider<Genre>) grid.getDataProvider();
+//        dataProvider.setFilter(Genre::getName, s -> caseInsensitiveContains(s, event.getValue()));
+//    }
+//
+//    private Boolean caseInsensitiveContains(String where, String what) {
+//        return where.toLowerCase().contains(what.toLowerCase());
+//    }
 
 }

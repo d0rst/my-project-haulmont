@@ -4,6 +4,8 @@ import com.example.application.data.entity.Author;
 import com.example.application.data.repository.AuthorRepository;
 import com.example.application.data.repository.CrudRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -46,6 +48,15 @@ public class AuthorRepositoryJpa implements AuthorRepository {
     @Override
     public List<Author> getAllAuthors() {
         TypedQuery<Author> query = em.createQuery("select a from Author a", Author.class);
+        return query.getResultList();
+    }
+
+    public List<Author> search(String searchTerm) {
+        TypedQuery<Author> query = em.createQuery("select a from Author a " +
+                "where lower(a.firstName) like lower(concat('%', :searchTerm, '%')) " +
+                "or lower(a.lastName) like lower(concat('%', :searchTerm, '%'))" +
+                "or lower(a.patronymic) like lower(concat('%', :searchTerm, '%'))", Author.class);
+        query.setParameter("searchTerm", searchTerm);
         return query.getResultList();
     }
 }

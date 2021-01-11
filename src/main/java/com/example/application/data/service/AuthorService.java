@@ -12,4 +12,6 @@ public interface AuthorService {
     boolean delete(Long id);
 
     boolean delete(Author author);
+
+    List<Author> findAll(String filterText);
 }
