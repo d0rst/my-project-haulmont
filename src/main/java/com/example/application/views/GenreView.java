@@ -12,32 +12,36 @@ import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
+import com.vaadin.flow.component.grid.HeaderRow;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.splitlayout.SplitLayout;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.data.provider.DataProvider;
 import com.vaadin.flow.data.provider.ListDataProvider;
+import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.vaadin.flow.router.RouteAlias;
 import com.vaadin.flow.component.textfield.TextField;
+
+import java.util.Locale;
 
 @Route(value = "genres", layout = MainView.class)
 @PageTitle("Genres")
 @CssImport("./styles/views/helloworld/hello-world-view.css")
 @RouteAlias(value = "genres", layout = MainView.class)
-public class GenreView extends Div {
+public class GenreView extends VerticalLayout {
 
     private Grid<Genre> grid = new Grid<>(Genre.class, false);
-
     private TextField name;
-//    private TextField nameFilter;
     private Label statLabel;
 
     private Button cancel = new Button("Cancel");
@@ -55,20 +59,19 @@ public class GenreView extends Div {
 
         createGridLayout(splitLayout);
         createEditorLayout(splitLayout);
-
-//        nameFilter = new TextField();
-//        nameFilter.setPlaceholder("Name...");
-//        nameFilter.addValueChangeListener(this::onNameFilterTextChange);
-
+        
         statLabel = new Label("Statistics");
 
-//        add(nameFilter, statLabel, splitLayout);
-        add(statLabel, splitLayout);
+        HeaderRow filterRow = grid.appendHeaderRow();
+        Grid.Column<Genre> firstNameColumn = grid
+                .addColumn(Genre::getName).setHeader("Name");
 
-        grid.addColumn("name").setAutoWidth(true);
-
-        ListDataProvider<Genre> dataProvider = DataProvider.ofCollection(genreService.getAllGenres());
-        grid.setDataProvider(dataProvider);
+        TextField nameFilter = new TextField();
+        nameFilter.setPlaceholder("Name...");
+        nameFilter.addValueChangeListener(this::onNameFilterTextChange);
+        filterRow.getCell(firstNameColumn).setComponent(nameFilter);
+        nameFilter.setSizeFull();
+        nameFilter.setPlaceholder("Filter");
 
         grid.setItems(genreRepository.getAllGenres());
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
@@ -89,11 +92,8 @@ public class GenreView extends Div {
             }
         });
 
-
         binder = new BeanValidationBinder<>(Genre.class);
-
         binder.bindInstanceFields(this);
-
         cancel.addClickListener(e -> {
             clearForm();
             refreshGrid();
@@ -132,7 +132,16 @@ public class GenreView extends Div {
             }
         });
 
+        add(splitLayout, statLabel);
     }
+
+    private TextField getColumnFilterField() {
+        TextField filter = new TextField();
+        filter.setWidth("100%");
+        filter.setPlaceholder("Filter");
+        return filter;
+    }
+
 
     private void createEditorLayout(SplitLayout splitLayout) {
         Div editorLayoutDiv = new Div();
@@ -193,13 +202,13 @@ public class GenreView extends Div {
         binder.readBean(this.genre);
     }
 
-//    private void onNameFilterTextChange(HasValue.ValueChangeEvent<String> event) {
-//        ListDataProvider<Genre> dataProvider = (ListDataProvider<Genre>) grid.getDataProvider();
-//        dataProvider.setFilter(Genre::getName, s -> caseInsensitiveContains(s, event.getValue()));
-//    }
-//
-//    private Boolean caseInsensitiveContains(String where, String what) {
-//        return where.toLowerCase().contains(what.toLowerCase());
-//    }
+    private void onNameFilterTextChange(HasValue.ValueChangeEvent<String> event) {
+        ListDataProvider<Genre> dataProvider = (ListDataProvider<Genre>) grid.getDataProvider();
+        dataProvider.setFilter(Genre::getName, s -> caseInsensitiveContains(s, event.getValue()));
+    }
+
+    private Boolean caseInsensitiveContains(String where, String what) {
+        return where.toLowerCase().contains(what.toLowerCase());
+    }
 
 }
