@@ -29,7 +29,7 @@ public class BookServiceImpl implements BookService {
         Book book = bookRepository.read(Book.class, id);
         return delete(book);
     }
-//
+
     @Override
     public boolean delete(Book book) {
         try {
@@ -39,14 +39,5 @@ public class BookServiceImpl implements BookService {
         }
         return true;
     }
-
-//    @Override
-//    public void addGenreToBook(UUID genreUuid, UUID bookUuid) {
-//        Genre genre = genreRepository.read(Genre.class, genreUuid);
-//        Book book = bookRepository.read(Book.class, bookUuid);
-//        book.delGenre(genre);
-//        bookRepository.update(book);
-//    }
-
 
 }

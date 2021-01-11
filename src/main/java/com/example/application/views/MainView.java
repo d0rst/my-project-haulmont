@@ -2,7 +2,6 @@ package com.example.application.views;
 
 import java.util.Optional;
 
-import com.example.application.views.AuthorView;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentUtil;
 import com.vaadin.flow.component.applayout.AppLayout;
@@ -82,8 +81,7 @@ public class MainView extends AppLayout {
         return new Tab[]{
                 createTab("Genre", GenreView.class),
                 createTab("Authors", AuthorView.class),
-                createTab("Books", BookView.class),
-                createTab("list", ListView.class)
+                createTab("Books", BookView.class)
         };
     }
 

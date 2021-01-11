@@ -1,16 +1,12 @@
 package com.example.application.views;
 
 import com.example.application.data.entity.Book;
-import com.example.application.data.entity.Genre;
-import com.example.application.data.repository.AuthorRepository;
 import com.example.application.data.repository.BookRepository;
-import com.example.application.data.service.AuthorService;
 import com.example.application.data.service.BookService;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasStyle;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
@@ -21,25 +17,17 @@ import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.splitlayout.SplitLayout;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
-import com.vaadin.flow.data.binder.Setter;
 import com.vaadin.flow.data.binder.ValidationException;
-import com.vaadin.flow.data.converter.Converter;
 import com.vaadin.flow.data.converter.StringToIntegerConverter;
-import com.vaadin.flow.data.validator.RegexpValidator;
-import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.vaadin.flow.router.RouteAlias;
 import com.vaadin.flow.component.textfield.TextField;
 
 import java.text.NumberFormat;
-import java.util.List;
 import java.util.Locale;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 @Route(value = "books", layout = MainView.class)
 @PageTitle("Books")
@@ -52,8 +40,8 @@ public class BookView extends Div {
     private TextField title;
     private TextField city;
     private TextField year;
-    private TextField author;
-    private TextField genre;
+//    private TextField author;
+//    private TextField genre;
     private ListBox<String> publisher = new ListBox<>();;
 
     
@@ -83,12 +71,13 @@ public class BookView extends Div {
         grid.addColumn("year")
                 .setComparator(Book::getYear)
                 .setAutoWidth(true);
-        grid.addColumn("authorId")
-                .setComparator(Book::getAuthorId)
-                .setAutoWidth(true);
-        grid.addColumn("genreId")
-                .setComparator(Book::getGenreId)
-                .setAutoWidth(true);
+
+//        grid.addColumn("authorId")
+//                .setComparator(Book::getAuthorId)
+//                .setAutoWidth(true);
+//        grid.addColumn("genreId")
+//                .setComparator(Book::getGenreId)
+//                .setAutoWidth(true);
 
         grid.setItems(bookRepository.getAllBooks());
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
@@ -183,10 +172,10 @@ public class BookView extends Div {
         publisher.setItems("Москва", "Санкт-Петербург", "O’Reilly");
         publisher.setValue("Москва");
 
-        author = new TextField("Author");
-        genre = new TextField("Genre");
+//        author = new TextField("Author");
+//        genre = new TextField("Genre");
 
-        Component[] fields = new Component[]{title, city, year, author, genre};
+        Component[] fields = new Component[]{title, city, year};
 
         for (Component field : fields) {
             ((HasStyle) field).addClassName("full-width");

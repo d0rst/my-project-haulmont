@@ -42,24 +42,9 @@ public class GenreRepositoryJpa implements GenreRepository {
         crudRepository.delete(genre);
     }
 
-
-//    @Override
-//    public Set<Genre> getGenresByBook(Book book) {
-//        TypedQuery<Genre> typedQuery = em.createQuery("select b.genres from Book b  where  b = :book ", Genre.class);
-//        typedQuery.setParameter("book", book);
-//        return typedQuery.getResultStream()
-//                .collect(Collectors.toSet());
-//    }
-
     @Override
     public List<Genre> getAllGenres() {
         TypedQuery<Genre> query = em.createQuery("select g from Genre g", Genre.class);
         return query.getResultList();
     }
-
-//    @Override
-//    public int getCount() {
-//
-//    }
-
 }

@@ -7,11 +7,14 @@ import javax.persistence.*;
 public class Genre{
     @Id
     @GeneratedValue
-    @Column(name = "GENRE_ID")
-    private Long genreId;
+    @Column(name = "ID")
+    private Long id;
 
     @Column(name = "NAME")
     private String name;
+
+//    @ManyToMany(mappedBy = "genres", fetch = FetchType.LAZY)
+//    private Set<Book> books;
 
     public Genre(){}
 
@@ -27,11 +30,19 @@ public class Genre{
         this.name = name;
     }
 
-    public Long getGenreId() {
-        return genreId;
+    public Long getId() {
+        return id;
     }
 
-    public void setGenreId(Long genreId) {
-        this.genreId = genreId;
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    @Override
+    public String toString() {
+        return "Genre{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
     }
 }

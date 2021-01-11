@@ -12,7 +12,5 @@ public interface BookService {
     boolean delete(Long id);
 
     boolean delete(Book book);
-//
-//    void addGenreToBook(Long genreUuid, Long bookUuid);
 }
 

@@ -1,7 +1,7 @@
 package com.example.application.data.repository.impl;
 
-import com.example.application.data.entity.Author;
 import com.example.application.data.entity.Book;
+import com.example.application.data.entity.Genre;
 import com.example.application.data.repository.BookRepository;
 import com.example.application.data.repository.CrudRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,5 +49,14 @@ public class BookRepositoryJpa implements BookRepository {
     public List<Book> getAllBooks() {
         TypedQuery<Book> query = em.createQuery("select b from Book b", Book.class);
         return query.getResultList();
+    }
+
+    @Override
+    public Set<Book> getBooksByGenre(Genre genre) {
+        TypedQuery<Book> typedQuery =
+                em.createQuery("select b from Book b  where  :genre MEMBER of b.genres", Book.class);
+        typedQuery.setParameter("genre", genre);
+        return typedQuery.getResultStream()
+                .collect(Collectors.toSet());
     }
 }

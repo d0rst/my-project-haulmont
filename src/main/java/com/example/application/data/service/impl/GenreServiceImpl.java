@@ -1,20 +1,25 @@
 package com.example.application.data.service.impl;
 
 
+import com.example.application.data.entity.Book;
 import com.example.application.data.entity.Genre;
 import com.example.application.data.repository.BookRepository;
 import com.example.application.data.repository.GenreRepository;
 import com.example.application.data.service.GenreService;
+import com.vaadin.flow.component.html.Label;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class GenreServiceImpl implements GenreService {
 
     @Autowired
     private GenreRepository genreRepository;
+    @Autowired
+    private BookRepository bookRepository;
 
     @Override
     public Genre getGenreById(Long id) {
@@ -26,18 +31,6 @@ public class GenreServiceImpl implements GenreService {
     public List<Genre> getAllGenres() {
         return genreRepository.getAllGenres();
     }
-
-//    @Override
-//    public Genre addGenre(String name) {
-//        try {
-//            Genre genre = new Genre(name);
-//            genreRepository.create(genre);
-//            return genre;
-//        } catch (Exception e) {
-//            log.error("Error adding genre", e);
-//        }
-//        return null;
-//    }
 
     @Override
     public boolean delete(Long id) {
@@ -53,6 +46,12 @@ public class GenreServiceImpl implements GenreService {
             e.printStackTrace();
         }
         return true;
+    }
+
+    @Override
+    public int getCountById(Genre genre) {
+        Set<Book> books = bookRepository.getBooksByGenre(genre);
+        return books.size();
     }
 
 }

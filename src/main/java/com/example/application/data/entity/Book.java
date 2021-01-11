@@ -1,14 +1,15 @@
 package com.example.application.data.entity;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Table(name = "BOOKS")
 public class Book{
     @Id
     @GeneratedValue
-    @Column(name = "BOOK_ID")
-    private Long bookId;
+    @Column(name = "ID")
+    private Long id;
     @Column(name = "TITLE")
     private String title;
     @Column(name = "PUBLISHER")
@@ -17,36 +18,42 @@ public class Book{
     private int year;
     @Column(name = "CITY")
     private String city;
-    @Column(name = "AUTHOR_ID")
-    private Long authorId;
-    @Column(name = "GENRE_ID")
-    private Long genreId;
+//    @Column(name = "AUTHOR_ID")
+//    private Long authorId;
+//    @Column(name = "GENRE_ID")
+//    private Long genreId;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "GENRE_BOOK",
+            joinColumns = @JoinColumn(name = "BOOK_ID", referencedColumnName = "ID"),
+            inverseJoinColumns = @JoinColumn(name = "GENRE_ID", referencedColumnName = "ID"))
+    Set<Genre> genres;
 
     public Book(){}
 
-    public String getGenreId() {
-        return String.valueOf(genreId);
-    }
+//    public String getGenreId() {
+//        return String.valueOf(genreId);
+//    }
+//
+//    public void setGenreId(Long genreId) {
+//        this.genreId = genreId;
+//    }
+//
+//    public void setGenreId(String genreId) {
+//        this.genreId = Long.valueOf(genreId);
+//    }
+//
+//    public String getAuthorId() {
+//        return String.valueOf(authorId);
+//    }
 
-    public void setGenreId(Long genreId) {
-        this.genreId = genreId;
-    }
+//    public void setAuthorId(String authorId) {
+//        this.authorId = Long.valueOf(authorId);
+//    }
 
-    public void setGenreId(String genreId) {
-        this.genreId = Long.valueOf(genreId);
-    }
-
-    public String getAuthorId() {
-        return String.valueOf(authorId);
-    }
-
-    public void setAuthorId(String authorId) {
-        this.authorId = Long.valueOf(authorId);
-    }
-
-    public void setAuthorId(Long authorId) {
-        this.authorId = authorId;
-    }
+//    public void setAuthorId(Long authorId) {
+//        this.authorId = authorId;
+//    }
 
     public String getTitle() {
         return title;
@@ -81,10 +88,18 @@ public class Book{
     }
 
     public Long getBookId() {
-        return bookId;
+        return id;
     }
 
-    public void setBookId(Long bookId) {
-        this.bookId = bookId;
+    public void setBookId(Long id) {
+        this.id = id;
+    }
+
+    public Set<Genre> getGenres() {
+        return genres;
+    }
+
+    public void setGenres(Set<Genre> genres) {
+        this.genres = genres;
     }
 }

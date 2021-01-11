@@ -43,12 +43,6 @@ public class Author {
     public void setPatronymic(String patronymic) {
         this.patronymic = patronymic;
     }
-//    public Set<Book> getBooks() {
-//        return books;
-//    }
-//    public void setBooks(Set<Book> books) {
-//        this.books = books;
-//    }
 
     public Long getAuthorId() {
         return authorId;
