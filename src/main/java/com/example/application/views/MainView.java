@@ -82,7 +82,8 @@ public class MainView extends AppLayout {
         return new Tab[]{
                 createTab("Genre", GenreView.class),
                 createTab("Authors", AuthorView.class),
-                createTab("Books", BookView.class)
+                createTab("Books", BookView.class),
+                createTab("list", ListView.class)
         };
     }
 

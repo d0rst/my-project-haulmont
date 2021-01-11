@@ -5,6 +5,7 @@ import com.example.application.data.repository.GenreRepository;
 import com.example.application.data.service.GenreService;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasStyle;
+import com.vaadin.flow.component.HasValue;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dependency.CssImport;
@@ -17,12 +18,16 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.splitlayout.SplitLayout;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.ValidationException;
+import com.vaadin.flow.data.provider.DataProvider;
+import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import com.vaadin.flow.router.RouteAlias;
 import com.vaadin.flow.component.textfield.TextField;
+
+import java.util.Locale;
 
 @Route(value = "genres", layout = MainView.class)
 @PageTitle("Genres")
@@ -33,10 +38,12 @@ public class GenreView extends Div {
     private Grid<Genre> grid = new Grid<>(Genre.class, false);
 
     private TextField name;
+    private TextField nameFilter;
 
     private Button cancel = new Button("Cancel");
     private Button save = new Button("Save");
     private Button delete = new Button("Delete");
+    private Button statistics = new Button("Statistics");
 
     private BeanValidationBinder<Genre> binder;
 
@@ -50,9 +57,17 @@ public class GenreView extends Div {
         createGridLayout(splitLayout);
         createEditorLayout(splitLayout);
 
-        add(splitLayout);
+        nameFilter = new TextField();
+        nameFilter.setPlaceholder("Name...");
+        nameFilter.addValueChangeListener(this::onNameFilterTextChange);
 
+        add(nameFilter, splitLayout);
+
+        grid.addColumn("genreId").setAutoWidth(true);
         grid.addColumn("name").setAutoWidth(true);
+
+        ListDataProvider<Genre> dataProvider = DataProvider.ofCollection(genreService.getAllGenres());
+        grid.setDataProvider(dataProvider);
 
         grid.setItems(genreRepository.getAllGenres());
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
@@ -70,6 +85,7 @@ public class GenreView extends Div {
                 clearForm();
             }
         });
+
 
         binder = new BeanValidationBinder<>(Genre.class);
 
@@ -104,6 +120,23 @@ public class GenreView extends Div {
                 binder.writeBean(this.genre);
 
                 genreRepository.delete(this.genre);
+                clearForm();
+                refreshGrid();
+                Notification.show("details stored.");
+            } catch (ValidationException validationException) {
+                Notification.show("details block.");
+                validationException.printStackTrace();
+            }
+        });
+
+        statistics.addClickListener(e -> {
+            try {
+                if (this.genre == null) {
+                    this.genre = new Genre();
+                }
+                binder.writeBean(this.genre);
+
+//                int c = genreRepository.getCount();
                 clearForm();
                 refreshGrid();
                 Notification.show("details stored.");
@@ -147,7 +180,8 @@ public class GenreView extends Div {
         cancel.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
         save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         delete.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        buttonLayout.add(save, cancel, delete);
+        statistics.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        buttonLayout.add(save, cancel, delete, statistics);
         editorLayoutDiv.add(buttonLayout);
     }
 
@@ -172,4 +206,14 @@ public class GenreView extends Div {
         this.genre = value;
         binder.readBean(this.genre);
     }
+
+    private void onNameFilterTextChange(HasValue.ValueChangeEvent<String> event) {
+        ListDataProvider<Genre> dataProvider = (ListDataProvider<Genre>) grid.getDataProvider();
+        dataProvider.setFilter(Genre::getName, s -> caseInsensitiveContains(s, event.getValue()));
+    }
+
+    private Boolean caseInsensitiveContains(String where, String what) {
+        return where.toLowerCase().contains(what.toLowerCase());
+    }
+
 }

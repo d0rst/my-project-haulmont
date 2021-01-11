@@ -39,6 +39,7 @@ public class AuthorView extends Div {
 
     private Grid<Author> grid = new Grid<>(Author.class, false);
 
+    private TextField id;
     private TextField firstName;
     private TextField lastName;
     private TextField patronymic;
@@ -50,7 +51,6 @@ public class AuthorView extends Div {
     private BeanValidationBinder<Author> binder;
 
     private Author author;
-    private ListDataProvider<Author> dataProvider;
 
     public AuthorView(@Autowired AuthorService authorService, AuthorRepository authorRepository) {
         setId("author-view");
@@ -62,10 +62,7 @@ public class AuthorView extends Div {
 
         add(splitLayout);
 
-        dataProvider = new ListDataProvider<>(
-                authorRepository.getAllAuthors());
-
-
+        grid.addColumn("authorId").setAutoWidth(true);
         grid.addColumn("firstName").setAutoWidth(true);
         grid.addColumn("lastName").setAutoWidth(true);
         grid.addColumn("patronymic").setAutoWidth(true);
@@ -141,22 +138,9 @@ public class AuthorView extends Div {
         editorLayoutDiv.add(editorDiv);
 
         FormLayout formLayout = new FormLayout();
-
-
         firstName = new TextField("First Name");
         firstName.setPattern("^[A-Za-zА-Яа-яЁё\\s-]+$");
-
-//        HeaderRow filterRow = grid.appendHeaderRow();
-//        firstName.setPreventInvalidInput(true);
-//        firstName.addValueChangeListener(event -> dataProvider.addFilter(
-//                author -> StringUtils.containsIgnoreCase(author.getFirstName(),
-//                        firstName.getValue())));
-//        firstName.setValueChangeMode(ValueChangeMode.EAGER);
-//
-//        filterRow.getCell(grid.getColumnByKey("firstName")).setComponent(firstName);
-//        firstName.setSizeFull();
-//        firstName.setPlaceholder("Filter");
-
+        firstName.setPreventInvalidInput(true);
         lastName = new TextField("Last Name");
         lastName.setPattern("^[A-Za-zА-Яа-яЁё\\s-]+$");
         lastName.setPreventInvalidInput(true);
@@ -209,4 +193,5 @@ public class AuthorView extends Div {
         this.author = value;
         binder.readBean(this.author);
     }
+
 }

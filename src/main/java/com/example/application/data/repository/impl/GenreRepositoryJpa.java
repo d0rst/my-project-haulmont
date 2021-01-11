@@ -57,4 +57,9 @@ public class GenreRepositoryJpa implements GenreRepository {
         return query.getResultList();
     }
 
+//    @Override
+//    public int getCount() {
+//
+//    }
+
 }
