@@ -21,6 +21,7 @@ import com.vaadin.flow.component.splitlayout.SplitLayout;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.data.converter.StringToIntegerConverter;
+import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
@@ -36,7 +37,7 @@ import java.util.Set;
 @Route(value = "books", layout = MainView.class)
 @PageTitle("Books")
 @CssImport("./styles/views/helloworld/hello-world-view.css")
-@RouteAlias(value = "books", layout = MainView.class)
+@RouteAlias(value = "", layout = MainView.class)
 public class BookView extends Div {
 
     private Grid<Book> grid = new Grid<>(Book.class, false);
@@ -44,8 +45,7 @@ public class BookView extends Div {
     private TextField title;
     private TextField city;
     private TextField year;
-//    private TextField author;
-//    private TextField genre;
+    private TextField filterText = new TextField();
     private ListBox<String> publisher = new ListBox<>();;
 
     
@@ -65,7 +65,11 @@ public class BookView extends Div {
         createGridLayout(splitLayout);
         createEditorLayout(splitLayout);
 
-        add(splitLayout);
+        filterText.setPlaceholder("Filter...");
+        filterText.setClearButtonVisible(true);
+        filterText.setValueChangeMode(ValueChangeMode.LAZY);
+        filterText.addValueChangeListener(e ->
+                grid.setItems(bookService.findAll(filterText.getValue())));
 
         grid.addColumn("title").setAutoWidth(true);
         grid.addColumn("city").setAutoWidth(true);
@@ -171,7 +175,7 @@ public class BookView extends Div {
                 validationException.printStackTrace();
             }
         });
-
+        add(splitLayout, filterText);
     }
 
     private void createEditorLayout(SplitLayout splitLayout) {

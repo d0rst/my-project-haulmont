@@ -1,5 +1,6 @@
 package com.example.application.data.repository.impl;
 
+import com.example.application.data.entity.Author;
 import com.example.application.data.entity.Book;
 import com.example.application.data.entity.Genre;
 import com.example.application.data.repository.BookRepository;
@@ -54,9 +55,22 @@ public class BookRepositoryJpa implements BookRepository {
     @Override
     public Set<Book> getBooksByGenre(Genre genre) {
         TypedQuery<Book> typedQuery =
-                em.createQuery("select b from Book b  where  :genre MEMBER of b.genres", Book.class);
+                em.createQuery("select b from Book b  where  :genre member of b.genres", Book.class);
         typedQuery.setParameter("genre", genre);
         return typedQuery.getResultStream()
                 .collect(Collectors.toSet());
+    }
+
+    public List<Book> search(String searchTerm) {
+        TypedQuery<Book> typedQuery = em.createQuery(
+                "select DISTINCT b from Book b " +
+                "LEFT JOIN FETCH b.genres g " +
+                "LEFT JOIN FETCH b.authors a " +
+                "where lower(g.name) = lower(:searchTerm) " +
+                "or lower(a.lastName) = lower(:searchTerm) " +
+                "or lower(b.title) like lower(concat('%', :searchTerm, '%')) "
+                , Book.class);
+        typedQuery.setParameter("searchTerm", searchTerm);
+        return typedQuery.getResultList();
     }
 }

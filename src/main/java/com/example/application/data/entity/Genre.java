@@ -1,7 +1,6 @@
 package com.example.application.data.entity;
 
 import javax.persistence.*;
-import java.util.Set;
 
 @Entity
 @Table(name = "GENRES")
@@ -13,9 +12,6 @@ public class Genre{
 
     @Column(name = "NAME")
     private String name;
-
-    @ManyToMany(mappedBy = "genres", fetch = FetchType.LAZY)
-    private Set<Book> books;
 
     public Genre(){}
 
@@ -33,9 +29,5 @@ public class Genre{
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 }

@@ -11,4 +11,6 @@ import java.util.Set;
 public interface BookRepository extends CrudRepository<Book> {
     Set<Book> getBooksByGenre(Genre genre);
     List<Book> getAllBooks();
+
+    List<Book> search(String searchTerm);
 }

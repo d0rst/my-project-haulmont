@@ -52,11 +52,11 @@ public class AuthorRepositoryJpa implements AuthorRepository {
     }
 
     public List<Author> search(String searchTerm) {
-        TypedQuery<Author> query = em.createQuery("select a from Author a " +
+        TypedQuery<Author> typedQuery = em.createQuery("select a from Author a " +
                 "where lower(a.firstName) like lower(concat('%', :searchTerm, '%')) " +
                 "or lower(a.lastName) like lower(concat('%', :searchTerm, '%'))" +
                 "or lower(a.patronymic) like lower(concat('%', :searchTerm, '%'))", Author.class);
-        query.setParameter("searchTerm", searchTerm);
-        return query.getResultList();
+        typedQuery.setParameter("searchTerm", searchTerm);
+        return typedQuery.getResultList();
     }
 }

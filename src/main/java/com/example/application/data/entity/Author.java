@@ -19,9 +19,6 @@ public class Author {
     @Column(name = "PATRONYMIC")
     private String patronymic;
 
-//    @ManyToMany(mappedBy = "authors", fetch = FetchType.LAZY)
-//    private List<Book> books;
-
     public Author(){}
 
     public Author(String firstName, String lastName, String patronymic) {

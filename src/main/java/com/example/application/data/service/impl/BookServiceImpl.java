@@ -1,5 +1,6 @@
 package com.example.application.data.service.impl;
 
+import com.example.application.data.entity.Author;
 import com.example.application.data.entity.Book;
 import com.example.application.data.repository.BookRepository;
 import com.example.application.data.service.BookService;
@@ -38,6 +39,15 @@ public class BookServiceImpl implements BookService {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public List<Book> findAll(String filterText) {
+        if(filterText == null || filterText.isEmpty()) {
+            return bookRepository.getAllBooks();
+        } else  {
+            return bookRepository.search(filterText);
+        }
     }
 
 }

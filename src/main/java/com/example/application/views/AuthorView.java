@@ -28,7 +28,7 @@ import com.vaadin.flow.component.textfield.TextField;
 @Route(value = "authors", layout = MainView.class)
 @PageTitle("Authors")
 @CssImport("./styles/views/helloworld/hello-world-view.css")
-@RouteAlias(value = "", layout = MainView.class)
+@RouteAlias(value = "authors", layout = MainView.class)
 public class AuthorView extends Div {
 
     private Grid<Author> grid = new Grid<>(Author.class, false);
@@ -37,7 +37,7 @@ public class AuthorView extends Div {
     private TextField lastName;
     private TextField patronymic;
 
-    TextField filterText = new TextField();
+    private TextField filterText;
 
 
     private Button cancel = new Button("Cancel");
@@ -56,19 +56,17 @@ public class AuthorView extends Div {
         createGridLayout(splitLayout);
         createEditorLayout(splitLayout);
 
-        add(splitLayout, filterText);
-
-        grid.addColumn("authorId").setAutoWidth(true);
-        grid.addColumn("firstName").setAutoWidth(true);
-        grid.addColumn("lastName").setAutoWidth(true);
-        grid.addColumn("patronymic").setAutoWidth(true);
-
-
+        filterText = new TextField();
         filterText.setPlaceholder("Filter...");
         filterText.setClearButtonVisible(true);
         filterText.setValueChangeMode(ValueChangeMode.LAZY);
         filterText.addValueChangeListener(e ->
                 grid.setItems(authorService.findAll(filterText.getValue())));
+
+        grid.addColumn("authorId").setAutoWidth(true);
+        grid.addColumn("firstName").setAutoWidth(true);
+        grid.addColumn("lastName").setAutoWidth(true);
+        grid.addColumn("patronymic").setAutoWidth(true);
 
         grid.setItems(authorRepository.getAllAuthors());
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
@@ -127,6 +125,8 @@ public class AuthorView extends Div {
                 Notification.show("An exception occurred while trying to delete detail.");
             }
         });
+
+        add(splitLayout, filterText);
     }
 
     private void createEditorLayout(SplitLayout splitLayout) {
