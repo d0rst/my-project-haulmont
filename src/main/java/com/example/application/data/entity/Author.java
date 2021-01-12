@@ -1,13 +1,15 @@
 package com.example.application.data.entity;
 
 import javax.persistence.*;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "AUTHORS")
 public class Author {
     @Id
     @GeneratedValue
-    @Column(name = "AUTHOR_ID")
+    @Column(name = "ID")
     private Long authorId;
 
     @Column(name = "FIRSTNAME")
@@ -16,6 +18,9 @@ public class Author {
     private String lastName;
     @Column(name = "PATRONYMIC")
     private String patronymic;
+
+//    @ManyToMany(mappedBy = "authors", fetch = FetchType.LAZY)
+//    private List<Book> books;
 
     public Author(){}
 

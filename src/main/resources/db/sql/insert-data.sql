@@ -1,4 +1,4 @@
-INSERT INTO authors (firstname, lastname, patronymic) VALUES
+INSERT INTO authors (lastname, firstname, patronymic) VALUES
 ('Stebunov', 'Ilya', 'Vitalievich'),
 ('famil', 'imya', 'otch'),
 ('famil2', 'imya2', 'otch2');
@@ -14,11 +14,11 @@ INSERT INTO books ( city, publisher, title, year) VALUES
 ('city2', 'O’Reilly', 'book3', 2007);
 
 INSERT INTO GENRE_BOOK (GENRE_ID, BOOK_ID) VALUES
-(0, 0),
-(0, 1),
-(0, 2),
-(1, 0),
-(1, 1),
-(2, 0);
+(0, 0),(0, 1),(0, 2),
+(1, 0),(1, 1),(2, 0);
+
+INSERT INTO AUTHOR_BOOK (AUTHOR_ID, BOOK_ID) VALUES
+(0, 0),(0, 1),(0, 2),
+(1, 0),(1, 1),(2, 0);
 
 

@@ -1,19 +1,18 @@
 package com.example.application.views;
 
+import com.example.application.data.entity.Author;
 import com.example.application.data.entity.Book;
 import com.example.application.data.entity.Genre;
 import com.example.application.data.repository.BookRepository;
 import com.example.application.data.service.BookService;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasStyle;
-import com.vaadin.flow.component.HasValue;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
-import com.vaadin.flow.component.grid.HeaderRow;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.listbox.ListBox;
 import com.vaadin.flow.component.notification.Notification;
@@ -22,7 +21,6 @@ import com.vaadin.flow.component.splitlayout.SplitLayout;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.data.converter.StringToIntegerConverter;
-import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
@@ -31,7 +29,9 @@ import com.vaadin.flow.router.RouteAlias;
 import com.vaadin.flow.component.textfield.TextField;
 
 import java.text.NumberFormat;
+import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 @Route(value = "books", layout = MainView.class)
 @PageTitle("Books")
@@ -75,6 +75,30 @@ public class BookView extends Div {
         grid.addColumn("year")
                 .setComparator(Book::getYear)
                 .setAutoWidth(true);
+
+        grid.addColumn(book -> {
+            Set<Author> authors = book.getAuthors();
+            StringBuilder name = new StringBuilder("");
+            for (Author a: authors) {
+                name.append(a.getLastName()).append(" ");
+                name.append((a.getLastName()).charAt(0)).append(". ");
+                name.append((a.getPatronymic()).charAt(0)).append(". ");
+            }
+            return name.toString();
+        })
+                .setHeader("Author")
+                .setAutoWidth(true);;
+
+        grid.addColumn(book -> {
+            Set<Genre> genres = book.getGenres();
+            StringBuilder name = new StringBuilder("");
+            for (Genre g: genres) {
+                name.append(g.getName()).append(" ");
+            }
+            return name.toString();
+        })
+                .setHeader("Genre")
+                .setAutoWidth(true);;
 
         grid.setItems(bookRepository.getAllBooks());
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);

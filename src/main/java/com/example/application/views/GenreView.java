@@ -51,9 +51,6 @@ public class GenreView extends VerticalLayout {
 
     private Genre genre;
 
-
-
-
     public GenreView(@Autowired GenreService genreService, GenreRepository genreRepository) {
         setId("genre-view");
         SplitLayout splitLayout = new SplitLayout();
@@ -64,19 +61,7 @@ public class GenreView extends VerticalLayout {
 
         statLabel = new Label("Statistics");
 
-
-
-//        HeaderRow filterRow = grid.appendHeaderRow();
-        Grid.Column<Genre> firstNameColumn = grid
-                .addColumn(Genre::getName).setHeader("Name");
-
-//        TextField nameFilter = new TextField();
-//        nameFilter.setPlaceholder("Name...");
-//        nameFilter.addValueChangeListener(this::onNameFilterTextChange);
-//        filterRow.getCell(firstNameColumn).setComponent(nameFilter);
-//        nameFilter.setSizeFull();
-//        nameFilter.setPlaceholder("Filter");
-
+        grid.addColumn(Genre::getName).setHeader("Name");
         grid.setItems(genreRepository.getAllGenres());
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
         grid.setHeightFull();
@@ -205,14 +190,4 @@ public class GenreView extends VerticalLayout {
         this.genre = value;
         binder.readBean(this.genre);
     }
-
-//    private void onNameFilterTextChange(HasValue.ValueChangeEvent<String> event) {
-//        ListDataProvider<Genre> dataProvider = (ListDataProvider<Genre>) grid.getDataProvider();
-//        dataProvider.setFilter(Genre::getName, s -> caseInsensitiveContains(s, event.getValue()));
-//    }
-//
-//    private Boolean caseInsensitiveContains(String where, String what) {
-//        return where.toLowerCase().contains(what.toLowerCase());
-//    }
-
 }

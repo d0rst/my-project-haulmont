@@ -1,6 +1,7 @@
 package com.example.application.data.entity;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -19,7 +20,13 @@ public class Book{
     @Column(name = "CITY")
     private String city;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "AUTHOR_BOOK",
+            joinColumns = @JoinColumn(name = "BOOK_ID", referencedColumnName = "ID"),
+            inverseJoinColumns = @JoinColumn(name = "AUTHOR_ID", referencedColumnName = "ID"))
+    Set<Author> authors;
+
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "GENRE_BOOK",
             joinColumns = @JoinColumn(name = "BOOK_ID", referencedColumnName = "ID"),
             inverseJoinColumns = @JoinColumn(name = "GENRE_ID", referencedColumnName = "ID"))
@@ -73,5 +80,13 @@ public class Book{
 
     public void setGenres(Set<Genre> genres) {
         this.genres = genres;
+    }
+
+    public Set<Author> getAuthors() {
+        return authors;
+    }
+
+    public void setAuthors(Set<Author> authors) {
+        this.authors = authors;
     }
 }

@@ -1,6 +1,7 @@
 package com.example.application.data.entity;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Table(name = "GENRES")
@@ -13,8 +14,8 @@ public class Genre{
     @Column(name = "NAME")
     private String name;
 
-//    @ManyToMany(mappedBy = "genres", fetch = FetchType.LAZY)
-//    private Set<Book> books;
+    @ManyToMany(mappedBy = "genres", fetch = FetchType.LAZY)
+    private Set<Book> books;
 
     public Genre(){}
 
@@ -36,13 +37,5 @@ public class Genre{
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    @Override
-    public String toString() {
-        return "Genre{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                '}';
     }
 }

@@ -1,5 +1,5 @@
 CREATE TABLE authors (
-author_id BIGINT IDENTITY PRIMARY KEY,
+id BIGINT IDENTITY PRIMARY KEY,
 firstname VARCHAR(255),
 lastname VARCHAR(255),
 patronymic VARCHAR(255)
@@ -20,6 +20,11 @@ year INTEGER
 
 CREATE TABLE GENRE_BOOK (
 genre_id BIGINT,
+book_id BIGINT
+);
+
+CREATE TABLE AUTHOR_BOOK (
+author_id BIGINT,
 book_id BIGINT
 );
 
