@@ -64,11 +64,12 @@ public class BookRepositoryJpa implements BookRepository {
     public List<Book> search(String searchTerm) {
         TypedQuery<Book> typedQuery = em.createQuery(
                 "select DISTINCT b from Book b " +
-                "LEFT JOIN FETCH b.genres g " +
-                "LEFT JOIN FETCH b.authors a " +
-                "where lower(g.name) = lower(:searchTerm) " +
-                "or lower(a.lastName) = lower(:searchTerm) " +
-                "or lower(b.title) like lower(concat('%', :searchTerm, '%')) "
+                        "join FETCH b.genres g " +
+                        "join FETCH b.authors a " +
+                        "where lower(g.name) = lower(:searchTerm) " +
+                        "or lower(a.lastName) = lower(:searchTerm) " +
+                        "or lower(b.title) like lower(concat('%', :searchTerm, '%')) " +
+                        "or lower(b.publisher) like lower(concat('%', :searchTerm, '%')) "
                 , Book.class);
         typedQuery.setParameter("searchTerm", searchTerm);
         return typedQuery.getResultList();
