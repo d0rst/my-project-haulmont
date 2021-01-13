@@ -1,6 +1,8 @@
 package com.example.application.data.entity;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Entity
@@ -81,11 +83,11 @@ public class Book{
         this.genres = genres;
     }
 
-    public Set<Author> getAuthors() {
+    public Set <Author> getAuthors() {
         return authors;
     }
 
-    public void setAuthors(Set<Author> authors) {
+    public void setAuthors(Set <Author> authors) {
         this.authors = authors;
     }
 }

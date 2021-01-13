@@ -7,8 +7,10 @@ import com.example.application.data.repository.BookRepository;
 import com.example.application.data.service.BookService;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasStyle;
+import com.vaadin.flow.component.HasValue;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
@@ -30,6 +32,7 @@ import com.vaadin.flow.router.RouteAlias;
 import com.vaadin.flow.component.textfield.TextField;
 
 import java.text.NumberFormat;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -45,7 +48,9 @@ public class BookView extends Div {
     private TextField title;
     private TextField city;
     private TextField year;
-    private TextField filterText = new TextField();
+    private TextField filterText;
+//    private TextField genres;
+    ComboBox<Author> cb;
     private ListBox<String> publisher = new ListBox<>();;
 
     
@@ -65,11 +70,16 @@ public class BookView extends Div {
         createGridLayout(splitLayout);
         createEditorLayout(splitLayout);
 
+        filterText = new TextField();
         filterText.setPlaceholder("Filter...");
         filterText.setClearButtonVisible(true);
         filterText.setValueChangeMode(ValueChangeMode.LAZY);
         filterText.addValueChangeListener(e ->
                 grid.setItems(bookService.findAll(filterText.getValue())));
+
+        cb = new ComboBox<>();
+        List<Author> authors = bookService
+        cb.setItems();
 
         grid.addColumn("title").setAutoWidth(true);
         grid.addColumn("city").setAutoWidth(true);
@@ -139,6 +149,20 @@ public class BookView extends Div {
                 .asRequired("Every book must have a title")
                 .bind(Book::getTitle, Book::setTitle);
 
+//        binder.bind(test_authors,
+//                author -> book.getAuthors(),
+//                (book, author) -> {
+//                    book.setAuthors(author);
+//                });
+
+//        binder.bind(test_authors,
+//                authors -> book.getAuthors(),
+//                b)
+//                .asRequired("Every book must have a title")
+//                .
+//                .bind(Book::getAuthors, Book::setAuthors)
+                ;
+
         binder.bindInstanceFields(this);
 
         cancel.addClickListener(e -> {
@@ -193,6 +217,14 @@ public class BookView extends Div {
         city.setPattern("^[A-Za-zА-Яа-яЁё\\s-]+$");
         city.setPreventInvalidInput(true);
         year = new TextField("year");
+//        test_authors = new TextField("authors");
+//        genres = new TextField("genres");
+
+//        cb.addValueChangeListener((HasValue.ValueChangeEvent<String> event) -> {
+//            String item = event.getValue();
+//            lbl.setValue(item);
+//        });
+
 
         publisher.setItems("Москва", "Санкт-Петербург", "O’Reilly");
         publisher.setValue("Москва");
