@@ -31,20 +31,20 @@ import com.vaadin.flow.component.textfield.TextField;
 @RouteAlias(value = "authors", layout = MainView.class)
 public class AuthorView extends Div {
 
-    private Grid<Author> grid = new Grid<>(Author.class, false);
+    private final Grid<Author> grid = new Grid<>(Author.class, false);
 
     private TextField firstName;
     private TextField lastName;
     private TextField patronymic;
 
-    private TextField filterText;
+    private final TextField filterText;
 
 
-    private Button cancel = new Button("Cancel");
-    private Button save = new Button("Save");
-    private Button delete = new Button("Delete");
+    private final Button cancel = new Button("Cancel");
+    private final Button save = new Button("Save");
+    private final Button delete = new Button("Delete");
 
-    private BeanValidationBinder<Author> binder;
+    private final BeanValidationBinder<Author> binder;
 
     private Author author;
 
@@ -53,9 +53,6 @@ public class AuthorView extends Div {
         SplitLayout splitLayout = new SplitLayout();
         splitLayout.setSizeFull();
 
-        createGridLayout(splitLayout);
-        createEditorLayout(splitLayout);
-
         filterText = new TextField();
         filterText.setPlaceholder("Filter...");
         filterText.setClearButtonVisible(true);
@@ -63,7 +60,6 @@ public class AuthorView extends Div {
         filterText.addValueChangeListener(e ->
                 grid.setItems(authorService.findAll(filterText.getValue())));
 
-        grid.addColumn("authorId").setAutoWidth(true);
         grid.addColumn("firstName").setAutoWidth(true);
         grid.addColumn("lastName").setAutoWidth(true);
         grid.addColumn("patronymic").setAutoWidth(true);
@@ -74,7 +70,7 @@ public class AuthorView extends Div {
 
         grid.asSingleSelect().addValueChangeListener(event -> {
             if (event.getValue() != null) {
-                Author authorFromBackend = authorService.getAuthorById(event.getValue().getAuthorId());
+                Author authorFromBackend = authorService.getAuthorById(event.getValue().getId());
                 if (authorFromBackend != null) {
                     populateForm(authorFromBackend);
                 } else {
@@ -126,7 +122,9 @@ public class AuthorView extends Div {
             }
         });
 
-        add(splitLayout, filterText);
+        createGridLayout(splitLayout);
+        createEditorLayout(splitLayout);
+        add(filterText, splitLayout);
     }
 
     private void createEditorLayout(SplitLayout splitLayout) {
@@ -164,6 +162,7 @@ public class AuthorView extends Div {
         HorizontalLayout buttonLayout = new HorizontalLayout();
         buttonLayout.setId("button-layout");
         buttonLayout.setWidthFull();
+        buttonLayout.setHeightFull();
         buttonLayout.setSpacing(true);
         cancel.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
         save.addThemeVariants(ButtonVariant.LUMO_PRIMARY);

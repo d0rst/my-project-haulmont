@@ -1,8 +1,6 @@
 package com.example.application.data.entity;
 
 import javax.persistence.*;
-import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = "AUTHORS")
@@ -10,7 +8,7 @@ public class Author {
     @Id
     @GeneratedValue
     @Column(name = "ID")
-    private Long authorId;
+    private Long id;
 
     @Column(name = "FIRSTNAME")
     private String firstName;
@@ -46,11 +44,11 @@ public class Author {
         this.patronymic = patronymic;
     }
 
-    public Long getAuthorId() {
-        return authorId;
+    public Long getId() {
+        return id;
     }
 
-    public void setAuthorId(Long authorId) {
-        this.authorId = authorId;
+    public void setId(Long id) {
+        this.id = id;
     }
 }

@@ -5,14 +5,12 @@ import com.example.application.data.repository.GenreRepository;
 import com.example.application.data.service.GenreService;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasStyle;
-import com.vaadin.flow.component.HasValue;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
-import com.vaadin.flow.component.grid.HeaderRow;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.notification.Notification;
@@ -21,8 +19,6 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.splitlayout.SplitLayout;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.ValidationException;
-import com.vaadin.flow.data.provider.DataProvider;
-import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
@@ -30,24 +26,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.vaadin.flow.router.RouteAlias;
 import com.vaadin.flow.component.textfield.TextField;
 
-import java.util.List;
-
-
 @Route(value = "genres", layout = MainView.class)
 @PageTitle("Genres")
 @CssImport("./styles/views/helloworld/hello-world-view.css")
 @RouteAlias(value = "genres", layout = MainView.class)
 public class GenreView extends VerticalLayout {
 
-    private Grid<Genre> grid = new Grid<>(Genre.class, false);
+    private final Grid<Genre> grid = new Grid<>(Genre.class, false);
     private TextField name;
-    private Label statLabel;
+    private final Label statLabel;
 
-    private Button cancel = new Button("Cancel");
-    private Button save = new Button("Save");
-    private Button delete = new Button("Delete");
+    private final Button cancel = new Button("Cancel");
+    private final Button save = new Button("Save");
+    private final Button delete = new Button("Delete");
 
-    private BeanValidationBinder<Genre> binder;
+    private final BeanValidationBinder<Genre> binder;
 
     private Genre genre;
 
@@ -123,14 +116,6 @@ public class GenreView extends VerticalLayout {
 
         add(splitLayout, statLabel);
     }
-
-    private TextField getColumnFilterField() {
-        TextField filter = new TextField();
-        filter.setWidth("100%");
-        filter.setPlaceholder("Filter");
-        return filter;
-    }
-
 
     private void createEditorLayout(SplitLayout splitLayout) {
         Div editorLayoutDiv = new Div();

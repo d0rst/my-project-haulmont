@@ -7,10 +7,8 @@ import com.example.application.data.repository.BookRepository;
 import com.example.application.data.service.BookService;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasStyle;
-import com.vaadin.flow.component.HasValue;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
@@ -20,20 +18,17 @@ import com.vaadin.flow.component.listbox.ListBox;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.splitlayout.SplitLayout;
+import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.data.converter.StringToIntegerConverter;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import com.vaadin.flow.router.RouteAlias;
-import com.vaadin.flow.component.textfield.TextField;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.text.NumberFormat;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
@@ -43,22 +38,19 @@ import java.util.Set;
 @RouteAlias(value = "", layout = MainView.class)
 public class BookView extends Div {
 
-    private Grid<Book> grid = new Grid<>(Book.class, false);
+    private final Grid<Book> grid = new Grid<>(Book.class, false);
 
     private TextField title;
     private TextField city;
     private TextField year;
-    private TextField filterText;
-//    private TextField genres;
-    ComboBox<Author> cb;
-    private ListBox<String> publisher = new ListBox<>();;
+    private final TextField filterText = new TextField();
+    private final ListBox<String> publisher = new ListBox<>();
 
-    
-    private Button cancel = new Button("Cancel");
-    private Button save = new Button("Save");
-    private Button delete = new Button("Delete");
+    private final Button cancel = new Button("Cancel");
+    private final Button save = new Button("Save");
+    private final Button delete = new Button("Delete");
 
-    private BeanValidationBinder<Book> binder;
+    private final BeanValidationBinder<Book> binder;
 
     private Book book;
 
@@ -70,16 +62,11 @@ public class BookView extends Div {
         createGridLayout(splitLayout);
         createEditorLayout(splitLayout);
 
-        filterText = new TextField();
         filterText.setPlaceholder("Filter...");
         filterText.setClearButtonVisible(true);
         filterText.setValueChangeMode(ValueChangeMode.LAZY);
         filterText.addValueChangeListener(e ->
                 grid.setItems(bookService.findAll(filterText.getValue())));
-
-        cb = new ComboBox<>();
-        List<Author> authors = bookService
-        cb.setItems();
 
         grid.addColumn("title").setAutoWidth(true);
         grid.addColumn("city").setAutoWidth(true);
@@ -92,7 +79,7 @@ public class BookView extends Div {
 
         grid.addColumn(book -> {
             Set<Author> authors = book.getAuthors();
-            StringBuilder name = new StringBuilder("");
+            StringBuilder name = new StringBuilder();
             for (Author a: authors) {
                 name.append(a.getLastName()).append(" ");
                 name.append((a.getLastName()).charAt(0)).append(". ");
@@ -101,18 +88,18 @@ public class BookView extends Div {
             return name.toString();
         })
                 .setHeader("Author")
-                .setAutoWidth(true);;
+                .setAutoWidth(true);
 
         grid.addColumn(book -> {
             Set<Genre> genres = book.getGenres();
-            StringBuilder name = new StringBuilder("");
+            StringBuilder name = new StringBuilder();
             for (Genre g: genres) {
                 name.append(g.getName()).append(" ");
             }
             return name.toString();
         })
                 .setHeader("Genre")
-                .setAutoWidth(true);;
+                .setAutoWidth(true);
 
         grid.setItems(bookRepository.getAllBooks());
         grid.addThemeVariants(GridVariant.LUMO_NO_BORDER);
@@ -148,20 +135,6 @@ public class BookView extends Div {
         binder.forField(title)
                 .asRequired("Every book must have a title")
                 .bind(Book::getTitle, Book::setTitle);
-
-//        binder.bind(test_authors,
-//                author -> book.getAuthors(),
-//                (book, author) -> {
-//                    book.setAuthors(author);
-//                });
-
-//        binder.bind(test_authors,
-//                authors -> book.getAuthors(),
-//                b)
-//                .asRequired("Every book must have a title")
-//                .
-//                .bind(Book::getAuthors, Book::setAuthors)
-                ;
 
         binder.bindInstanceFields(this);
 
@@ -199,7 +172,7 @@ public class BookView extends Div {
                 validationException.printStackTrace();
             }
         });
-        add(splitLayout, filterText);
+        add(filterText, splitLayout);
     }
 
     private void createEditorLayout(SplitLayout splitLayout) {
@@ -214,20 +187,13 @@ public class BookView extends Div {
         title =  new TextField("title");
 
         city = new TextField("city");
-        city.setPattern("^[A-Za-zА-Яа-яЁё\\s-]+$");
+        city.setPattern("[^0-9]+$");
         city.setPreventInvalidInput(true);
         year = new TextField("year");
-//        test_authors = new TextField("authors");
-//        genres = new TextField("genres");
-
-//        cb.addValueChangeListener((HasValue.ValueChangeEvent<String> event) -> {
-//            String item = event.getValue();
-//            lbl.setValue(item);
-//        });
-
 
         publisher.setItems("Москва", "Санкт-Петербург", "O’Reilly");
         publisher.setValue("Москва");
+
 
         Component[] fields = new Component[]{title, city, year};
 
